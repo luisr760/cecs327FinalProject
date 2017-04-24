@@ -8,7 +8,7 @@ import java.util.Random;
 
 public class Server {
 	/** Default port number where the server listens for connections. */
-	public static final int PORT = 6980;
+	public static final int PORT = 8000;
 	Random m_random = new Random();
 	public ArrayList primeNumbers = new ArrayList();
 	int count_fib = 1;
