@@ -1,14 +1,13 @@
-
 import java.io.*;
-import java.math.BigInteger;
 import java.net.Socket;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Client {
     private Socket socket;
     private BufferedReader in;
     private PrintWriter out;
-    // Rep invariant: socket, in, out != null
+
     
     public Client(String hostname, int port) throws IOException {
         socket = new Socket(hostname, port);
@@ -16,12 +15,12 @@ public class Client {
         out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
     }
     
-    public void sendRequest(int x) throws IOException {
+    private void sendRequest(int x) throws IOException {
         out.print(x + "\n");
         out.flush(); // important! make sure x actually gets sent
     }
     
-    public Integer getReply() throws IOException {
+    private Integer getReply() throws IOException {
         String reply = in.readLine();
         if (reply == null) {
             throw new IOException("connection terminated unexpectedly");
@@ -34,12 +33,12 @@ public class Client {
         }
     }
 
+
     /**
-     * Closes the client's connection to the server.
-     * This client is now "closed". Requires this is "open".
-     * @throws IOException if close fails
+     * Cleanly closes a client.
+     * @throws IOException if an error occurs closing the client.
      */
-    public void close() throws IOException {
+    private void close() throws IOException  {
         in.close();
         out.close();
         socket.close();
@@ -48,46 +47,35 @@ public class Client {
     
     
     
-    private static final int N = 5;
     
     public static void main(String[] args) {
+    	Scanner in = new Scanner(System.in);
         try {
             Client client = new Client("localhost", Server.PORT);
-           
-            
-            for (int i = 1; i <= 5; ++i) {
-            	client.sendRequest(i);
-            	System.out.println("fibonacci("+i+") = ?");
+            int choice = 0;
+            try {
+	            while (choice != -1) {
+	            	System.out.println("Select an option\n1. Next even fibonacci number"
+	            			+ "\n2. Next larger random number\n3. Next prime number");
+		            choice = in.nextInt();
+		            client.sendRequest(choice);
+		            System.out.println("");
+		    	    Integer y = client.getReply();
+		    	    System.out.println(""+y);
+	            	
+	            }
+            }
+            //in case a non-integer is attempted to be sent to the server
+            catch (InputMismatchException e) {
+            	System.err.println("Invalid option. Closing client cleanly.");
             }
             
-            for (int i = 1; i <= 5; ++i) {
-            	Integer y = client.getReply();
-            	System.out.println("Next Even Fibonacci Number is = "+y);
-            }
-            
-            for (int i = 1; i <= 5; ++i) {
-            	client.sendRequest(i);
-            	System.out.println("Random Number("+i+") = ?");
-            }
-            
-            for (int i = 1; i <= 5; ++i) {
-            	Integer y = client.getReply();
-            	System.out.println("Next Larger Random number is = "+y);
-            }
-            
-            for (int i = 1; i <= 5; ++i) {
-            	client.sendRequest(i);
-            	System.out.println("Number("+i+") = ?");
-            }
-            
-            for (int i = 1; i <= 5; ++i) {
-            	Integer y = client.getReply();
-            	System.out.println("Next Prime is = "+y);
-            }
-           
             client.close();
         } catch (IOException ioe) {
             ioe.printStackTrace();
+        }
+        finally {
+        	in.close();
         }
     }
 }

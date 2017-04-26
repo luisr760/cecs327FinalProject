@@ -2,48 +2,45 @@ import java.io.*;
 import java.math.BigInteger;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.Random;
 
 
 public class Server {
 	/** Default port number where the server listens for connections. */
-	public static final int PORT = 6980;
+	public static final int PORT = 8012;
 	Random m_random = new Random();
-	public ArrayList primeNumbers = new ArrayList();
+	
+	//counts for the number of each request
 	int count_fib = 1;
 	int count_rand = 1;
 	int count_prime = 1;
+	
 	int rand_temp = 0;
 	int rand_max = 100000;
 	int prime_temp = 1;
-
+	private int value;
 	private ServerSocket serverSocket;
 
-	// Rep invariant: serverSocket != null
-	//
-	// Thread safety argument:
-	// TODO FIBONACCI_PORT
-	// TODO serverSocket
-	// TODO socket objects
-	// TODO readers and writers in handle()
-	// TODO data in handle()
 
-
+	/**
+	 * Constructor for a Server
+	 * @param port the port number of the server
+	 * @throws IOException if there are complications with the ServerSocket
+	 */
 	public Server(int port) throws IOException {
 		serverSocket = new ServerSocket(port);
+		value = 0;
 	}
 
 	/**
-	 * Run the server, listening for connections and handling them.
-	 * 
-	 * @throws IOException
-	 *             if the main server socket is broken
+	 * The running state of the server, listening for connections to handle
+	 * @throws IOException if the main server socket is broken
 	 */
-	public void serve() throws IOException {
+	private void serve() throws IOException {
+		//keep the serving running
 		while (true) {
-			// block until a client connects
 			final Socket socket = serverSocket.accept();
+			
 			// create a new thread to handle that client
 			Thread handler = new Thread(new Runnable() {
 				public void run() {
@@ -53,7 +50,9 @@ public class Server {
 						} finally {
 							socket.close();
 						}
-					} catch (IOException ioe) {
+					} 
+					
+					catch (IOException ioe) {
 						// this exception wouldn't terminate serve(),
 						// since we're now on a different thread, but
 						// we still need to handle it
@@ -61,105 +60,105 @@ public class Server {
 					}
 				}
 			});
+			
 			// start the thread
 			handler.start();
 		}
 	}
 
 	/**
-	 * Handle one client connection. Returns when client disconnects.
-	 * 
-	 * @param socket
-	 *            socket where client is connected
-	 * @throws IOException
-	 *             if connection encounters an error
+	 * Handles connected clients.
+	 * @param socket socket where client is connected
+	 * @throws IOException if connection encounters an error
 	 */
 	private void handle(Socket socket) throws IOException {
-		System.err.println("client connected");
+		System.out.println("client connected");
 
-		// get the socket's input stream, and wrap converters around it
-		// that convert it from a byte stream to a character stream,
-		// and that buffer it so that we can read a line at a time
-		BufferedReader in = new BufferedReader(new InputStreamReader(
-				socket.getInputStream()));
+		BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		
 
-		// similarly, wrap character=>bytestream converter around the
-		// socket output stream, and wrap a PrintWriter around that so
-		// that we have more convenient ways to write Java primitive
-		// types to it.
-		PrintWriter out = new PrintWriter(new OutputStreamWriter(
-				socket.getOutputStream()), true);
-		
-		int p = 0;
-		
+		PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
+			
 		try {
+			value = 0;
+			while(true) {
 				try {
+					value = Character.getNumericValue(in.read());
+					
 					// compute answer and send back to client
-					for(int j = 1; j <= 5; j++) {
-						System.err.println("request: " + count_fib);
-						int x = Integer.valueOf(count_fib);
-						int y = nextFibonacciEven(x);
-						System.err.println("reply: " + y);
-						out.println(y);
-						count_fib++;
-					}
-					
-					for(int j = 1; j <= 5; j++) { 
-						 System.err.println("request: " + count_rand);
-			             int o = Integer.valueOf(count_rand);
-			             int t = randomWithRange(o, o, o*10000);
-			             System.err.println("reply: " +t);
-			             out.println(t);
-			             if(rand_temp > 90000) {
-			            	 rand_temp = 1;
-			             } else {
-			            	 rand_temp = t;
-			             }
-			             count_rand++;
-					}
-					
-					for (int j = 1; j <= 5; j++) {
-					  System.err.println("request: " + count_prime);
-                      int x = Integer.valueOf(prime_temp);
-                      int c = (int) getNextPrime(x);
-                      if (c == prime_temp) {
-                    	  c += 1;
-                    	  for ( int b = c; b <= (c * 10); b++) {
-                    		  c = (int) getNextPrime(b);
-                    		  if ( c != prime_temp) {
-                    			  break;
-                    		  }
-                    	  }
-                      }
-                      System.err.println("reply: " + c);
-                      out.println(c);
-                      prime_temp = c;
-                      count_prime++;
+					switch(value){
+						case 1:
+								System.out.println("request for even fibonacci: " + count_fib);
+								int w = Integer.valueOf(count_fib);
+								int y = nextFibonacciEven(w);
+								System.out.println("reply: " + y);
+								out.println(y);
+								count_fib++;
+						
+						break;
+						
+						//go over this. Ask him to explain the random limits.
+						case 2: 
+								 System.out.println("request for random number: " + count_rand);
+					             int o = Integer.valueOf(count_rand);
+					             int t = randomWithRange(o, o, o*100);
+					             System.out.println("reply: " +t);
+					             out.println(t);
+					             if(rand_temp > 90000) {
+					            	 rand_temp = 1;
+					             } else {
+					            	 rand_temp = t;
+					             }
+					             count_rand++;
+						
+						break;
+						case 3:
+							  System.out.println("request for prime number: " + count_prime);
+		                      int x = Integer.valueOf(prime_temp);
+		                      int c = (int) getNextPrime(x);
+		                      System.out.println(c);
+		                      System.out.println(prime_temp);
+		                      if (c == prime_temp) {
+		                    	  c += 1;
+		                    	  System.out.println(c);
+		                    	  for (int b = c; b <= (c * 10); b++) {
+		                    		  c = (int) getNextPrime(b);
+		                    		  if ( c != prime_temp) {
+		                    			  break;
+		                    		  }
+		                    	  }
+		                      }
+		                      System.out.println("reply: " + c);
+		                      out.println(c);
+		                      prime_temp = c;
+		                      count_prime++;
+						break;
+						
 					}
 
-				} catch (NumberFormatException e) {
+				} 
+				//in case the client receives a non-integer.
+				catch (NumberFormatException e) {
 					// complain about ill-formatted request
-					System.err.println("reply: err");
+					System.out.println("reply: err");
 					out.print("err\n");
 				}
-				
-			// important! our PrintWriter is auto-flushing, but if it were
-			// not:
-			// out.flush();
+			}
+
 		} finally {
+			System.out.print("Client Closed.");
 			out.close();
 			in.close();
 		}
+		
 	}
 
 	/**
-	 * Compute the n^th Fibonacci number
-	 * 
-	 * @param n
-	 *            indicates the Fibonacci number to compute. Requires n > 0.
-	 * @return the n^th Fibonacci number
+	 * Will return to the user the nth even fibonacci
+	 * @param n The number of even fibonacci numbers into the sequence
+	 * @return the nth even fibonacci number
 	 */
-	public int nextFibonacciEven(int n) {
+	private int nextFibonacciEven(int n) {
 		
 		if (n < 1) {
 			return n;
@@ -174,7 +173,7 @@ public class Server {
 
 	}
 	
-	public int randomWithRange(int number, int min, int max) {
+	private int randomWithRange(int number, int min, int max) {
 		int rand = (int) ((max - min) * Math.random()) + min;
 		do {
 			if(rand > number) { 
@@ -192,15 +191,17 @@ public class Server {
 		return rand;
 	}
 	
-	public long getNextPrime(long number)
+	/**
+	 * 
+	 * @param number 
+	 * @return
+	 */
+	private long getNextPrime(long number)
 	{
 		BigInteger b = new BigInteger(String.valueOf(number));
         return Long.parseLong(b.nextProbablePrime().toString());
 	} 
 
-	/**
-	 * Start a FibonacciServerMulti running on the default port.
-	 */
 	public static void main(String[] args) {
 		try {
 			Server server = new Server(
