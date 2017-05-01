@@ -17,7 +17,6 @@ import java.util.Random;
 public class Server {
 	/** Default port number where the server listens for connections. */
 	public static final int PORT = 8001;
-	Random m_random = new Random();
 	
 	//counts for the number of each request
 	int count_fib = 1;
@@ -25,9 +24,9 @@ public class Server {
 	int count_prime = 1;
 
 	//lower and upper bounds of the random number generator
-	int rand_min = 0;
-	long prime_temp = 1;
-	long fib = 0;
+	int mRandMin = 0;
+	long mPrime = 1;
+	long mFib = 0;
 	private int value;
 	private ServerSocket serverSocket;
 
@@ -104,31 +103,31 @@ public class Server {
 								
 								/*if the current fibonacci is larger than the next fibonacci
 								you've overflowed*/
-								if (fib > fibTemp) {
+								if (mFib > fibTemp) {
 									count_fib = 1;
-									fib = nextFibonacciEven(count_fib);
+									mFib = nextFibonacciEven(count_fib);
 								}
 								else
-									fib = fibTemp;
+									mFib = fibTemp;
 								System.out.println("request for even fibonacci: " + count_fib);
 
-								System.out.println("reply: " + fib);
-								out.println(fib);
+								System.out.println("reply: " + mFib);
+								out.println(mFib);
 								count_fib++;
 						
 						break;
 						
 						case 2: 
 								 System.out.println("request for random number: " + count_rand);
-					             int rand = new Random().nextInt(100 + rand_min) + rand_min;
+					             int rand = new Random().nextInt(100 + mRandMin) + mRandMin;
 					             
 					             //if rand is smaller than rand_min, then you overflowed					             
-					             if(rand < rand_min) {
-					            	 rand_min = 1;
+					             if(rand < mRandMin) {
+					            	 mRandMin = 1;
 					             }
 					             //rand_min becomes the new minimum to guarantee next random value is larger
 					             else
-					            	 rand_min = rand;
+					            	 mRandMin = rand;
 					             System.out.println("reply: " + rand);
 					             out.println(rand);
 					             
@@ -141,10 +140,15 @@ public class Server {
 							  System.out.println("request for prime number: " + count_prime);
 							  long primeTemp = getNextPrime(count_prime);
 							  
-							  
-		                      System.out.println("reply: " + primeTemp);
-		                      out.println(primeTemp);
-		                      prime_temp = primeTemp;
+							  //if you overflow
+							  if (primeTemp < mPrime) {
+								  count_prime = 1;
+								  mPrime = getNextPrime(count_prime);
+							  }
+							  else
+			                      mPrime = primeTemp;
+		                      System.out.println("reply: " + mPrime);
+		                      out.println(mPrime);
 		                      count_prime++;
 						break;
 						
@@ -204,7 +208,7 @@ public class Server {
 	 */
 	private long getNextPrime(int number)
 	{
-		long currentNum = prime_temp;
+		long currentNum = mPrime;
 		currentNum++;
 		while (!(isPrime(currentNum))) {
 			currentNum++;
