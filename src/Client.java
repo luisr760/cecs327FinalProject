@@ -45,14 +45,14 @@ public class Client {
      * @return the servers response 
      * @throws IOException in case theres an error with the connection
      */
-    private Integer getReply() throws IOException {
+    private long getReply() throws IOException {
         String reply = in.readLine();
         if (reply == null) {
             throw new IOException("connection closed");
         }
         
         try {
-            return new Integer(reply);
+            return new Long(reply);
         } catch (NumberFormatException nfe) {
             throw new IOException("misformatted reply: " + reply);
         }
@@ -85,7 +85,7 @@ public class Client {
 		            System.out.println("Sent value " + choice);
 		            client.sendRequest(choice);
 		            System.out.println("");
-		    	    Integer y = client.getReply();
+		    	    long y = client.getReply();
 		    	    System.out.println(""+y);
 	            	
 	            }
