@@ -3,7 +3,11 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketException;
 import java.util.Random;
-
+import java.util.concurrent.locks.*;;
+//32.88
+//34.66
+//84.43
+//91/105
 /**
  * 
  * @author Richard D., Luis R. Howard C. Mukesh S.
@@ -22,6 +26,8 @@ public class Server {
 	int count_fib = 1;
 	int count_rand = 1;
 	int count_prime = 1;
+	int currentEven = 0;
+	int currentOdd = 1;
 
 	//lower and upper bounds of the random number generator
 	int mRandMin = 0;
@@ -29,7 +35,9 @@ public class Server {
 	long mFib = 0;
 	private int value;
 	private ServerSocket serverSocket;
-
+	public Lock lockFib = new ReentrantLock();
+	public Lock lockPrime = new ReentrantLock();
+	public Lock lockRand = new ReentrantLock();
 
 	/**
 	 * Constructor for a Server
@@ -99,8 +107,9 @@ public class Server {
 					// compute answer and send back to client
 					switch(value) {
 						case 1:
+							try{
+								lockFib.lock();
 								long fibTemp = nextFibonacciEven(count_fib);
-								
 								/*if the current fibonacci is larger than the next fibonacci
 								you've overflowed*/
 								if (mFib > fibTemp) {
@@ -114,10 +123,14 @@ public class Server {
 								System.out.println("reply: " + mFib);
 								out.println(mFib);
 								count_fib++;
-						
+							}finally{
+								lockFib.unlock();
+							}
 						break;
 						
 						case 2: 
+							try{
+								 lockRand.lock();
 								 System.out.println("request for random number: " + count_rand);
 					             int rand = new Random().nextInt(100 + mRandMin) + mRandMin;
 					             
@@ -133,10 +146,14 @@ public class Server {
 					             
 
 					             count_rand++;
-						
+							}finally{
+								lockRand.unlock();
+							}
 						break;
 						
 						case 3:
+							try{
+							  lockPrime.lock();
 							  System.out.println("request for prime number: " + count_prime);
 							  long primeTemp = getNextPrime(count_prime);
 							  
@@ -150,6 +167,9 @@ public class Server {
 		                      System.out.println("reply: " + mPrime);
 		                      out.println(mPrime);
 		                      count_prime++;
+							}finally{
+								lockPrime.unlock();
+							}
 						break;
 						
 						//if the client sends a request that isn't 1, 2, or 3, send nothing back
@@ -229,7 +249,16 @@ public class Server {
             if (num % i == 0) return false;
         return true;
 	}
-	
+	private int nextEven()
+	{
+		currentEven += 2;
+		return currentEven;
+	}
+	private int nextOdd()
+	{
+		currentOdd += 2;
+		return currentOdd;
+	}
 	public static void main(String[] args) {
 		try {
 			Server server = new Server(
