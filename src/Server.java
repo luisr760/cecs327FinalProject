@@ -92,8 +92,6 @@ public class Server {
 		System.out.println("client connected");
 
 		BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-		
-
 		PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
 			
 		try {
@@ -101,7 +99,6 @@ public class Server {
 			while(value != 0) {
 				try {
 					value = Character.getNumericValue(in.read());
-					
 					//remove afterwards
 					System.out.println("read value" + value);
 					// compute answer and send back to client

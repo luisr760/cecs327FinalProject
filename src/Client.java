@@ -14,8 +14,8 @@ import java.util.Scanner;
 
 public class Client {
     private Socket socket;
-    private BufferedReader in;
-    private PrintWriter out;
+    //private BufferedReader in;
+    //private PrintWriter out;
 
     /**
      * Constructor for a client
@@ -25,8 +25,8 @@ public class Client {
      */
     public Client(String hostname, int port) throws IOException {
         socket = new Socket(hostname, port);
-        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+        //in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        //out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
     }
     
     /**
@@ -34,7 +34,7 @@ public class Client {
      * @param option the requested option to send to the server
      * @throws IOException in case socket encounters an error
      */
-    private void sendRequest(int option) throws IOException {
+    /*private void sendRequest(int option) throws IOException {
         out.print(option + "\n");
         out.flush();
     }
@@ -45,6 +45,7 @@ public class Client {
      * @return the servers response 
      * @throws IOException in case theres an error with the connection
      */
+    /*
     private long getReply() throws IOException {
         String reply = in.readLine();
         if (reply == null) {
@@ -57,24 +58,49 @@ public class Client {
             throw new IOException("misformatted reply: " + reply);
         }
     }
-
+*/
 
     /**
      * Cleanly closes a client cleanly.
      * @throws IOException if an error occurs closing the client.
      */
     private void close() throws IOException  {
-        in.close();
-        out.close();
+        //in.close();
+        //out.close();
         socket.close();
     }
     
     
     
     
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
+    	int uThrNumb= 8;
     	Scanner in = new Scanner(System.in);
-        try {
+    	try {
+            Client client = new Client("localhost", Server.PORT);
+            
+            runtimeThr rt =new runtimeThr(client.socket);
+            Thread runtime = new Thread(rt);
+    	    runtime.start();
+    	    
+    	    Thread uThr = null;
+	    	for(int i = 0; i < uThrNumb; i++)
+	    	{
+	    		uThr u = new uThr(i, rt);
+	    		uThr = new Thread(u);
+	    		rt.addThrList(u);
+	    		uThr.start();
+	    	}
+	    	runtime.join();
+	    	
+	    	client.close();
+    	}catch (IOException ioe) {
+        	System.err.print(ioe.getMessage());
+        }
+        finally {
+        	in.close();
+        }
+       /* try {
             Client client = new Client("localhost", Server.PORT);
             int choice = -1;
             try {
@@ -105,6 +131,6 @@ public class Client {
         }
         finally {
         	in.close();
-        }
+        }*/
     }
 }
