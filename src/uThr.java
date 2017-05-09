@@ -38,10 +38,11 @@ public class uThr implements Runnable
 		
 		for(int i = 0; i < iters; i++)
 		{
-			command = 1+ (rand.nextInt(3));
+			command = 1+ (rand.nextInt(5));
 			trt.setCommand(command);
 			runThr.toReqQue(trt);
-		}	
+		}
+		runThr.setDone(true);
 	}
 	public void printMessage(String m)
 	{

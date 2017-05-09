@@ -21,7 +21,13 @@ public class networkThr implements Runnable
 		try {
 			sendRequest(data.getCommand());
 			long ans = getReply();
-			data.setMessage(ans);
+			if(data.getCommand() == 1){
+				data.setMessage("NextEvenFib: ",ans);
+			}else if(data.getCommand() == 2){
+				data.setMessage("NextRand: ",ans);
+			}else if(data.getCommand() == 3){
+				data.setMessage("NextPrime: ",ans);
+			}
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

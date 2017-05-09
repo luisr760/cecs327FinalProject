@@ -90,9 +90,9 @@ public class Client {
 	    		uThr = new Thread(u);
 	    		rt.addThrList(u);
 	    		uThr.start();
+	    		uThr.join();
 	    	}
 	    	runtime.join();
-	    	
 	    	client.close();
     	}catch (IOException ioe) {
         	System.err.print(ioe.getMessage());

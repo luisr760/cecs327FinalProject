@@ -24,9 +24,9 @@ public class RTdata
 		{
 			return message;
 		}
-		public void setMessage(long s)
+		public void setMessage(String msg, long s)
 		{
-			message = s + "";
+			message =  msg + " " +s ;
 		}
 		
 	}

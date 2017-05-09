@@ -9,6 +9,8 @@ public class runtimeThr implements Runnable
 	public LinkedList<uThr> uThrList;
 	private Socket socket;
 	private networkThr netThr;
+	private localThr local;
+	private boolean done;
 	//Receives the socket to send to the network thread 
 	public runtimeThr(Socket s)
 	{
@@ -19,27 +21,40 @@ public class runtimeThr implements Runnable
 	}
 	public void run()
 	{
+		Thread t = null;
 		while(true)
 		{
-			Thread t = null;
+			
 			if(!requestQue.isEmpty())
 			{
 				RTdata data = (RTdata) requestQue.poll();
 				try 
 				{
-					netThr = new networkThr(socket, data);
-					t = new Thread(netThr);
-					t.start();
+					if(data.getCommand() == 4 || data.getCommand() == 5)
+					{
+						local = new localThr(data.getCommand(), data);
+						t = new Thread(local);
+						t.start();
+						t.join();
+						returnQue.add(local.returnData());
+					}
+					else{
+						netThr = new networkThr(socket, data);
+						t = new Thread(netThr);
+						t.start();
+						t.join();
+						returnQue.add(netThr.returnData());
+					}
 				} catch (IOException e) 
 				{
 					e.printStackTrace();
-				} 
-				returnQue.add(netThr.returnData());
-				
-			}
-			if(!returnQue.isEmpty())
-			{
-				sendMessageBack();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				if(!returnQue.isEmpty())
+				{
+					sendMessageBack();
+				}
 			}
 			
 		}
@@ -59,5 +74,8 @@ public class runtimeThr implements Runnable
 	{
 		requestQue.add(o);	
 	}
-	
+	public void setDone(boolean d)
+	{
+		done = d;
+	}
 }
