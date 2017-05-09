@@ -4,13 +4,10 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.Random;
 import java.util.concurrent.locks.*;;
-//32.88
-//34.66
-//84.43
-//91/105
+
 /**
  * 
- * @author Richard D., Luis R. Howard C. Mukesh S.
+ * @author Richard D., Luis R., Howard C., Mukesh S.
  * This program creates a server that creates a thread for each connected client.
  * The server is stateful and concurrent, and responds to requests in the form
  * of numbers (1 - 3 being valid requests). It can return an even fibonacci, a random 
@@ -246,16 +243,7 @@ public class Server {
             if (num % i == 0) return false;
         return true;
 	}
-	private int nextEven()
-	{
-		currentEven += 2;
-		return currentEven;
-	}
-	private int nextOdd()
-	{
-		currentOdd += 2;
-		return currentOdd;
-	}
+	
 	public static void main(String[] args) {
 		try {
 			Server server = new Server(

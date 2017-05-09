@@ -18,13 +18,11 @@ public class localThr implements Runnable
 		switch (choice)
 		{
 			case 4: 
-				//System.out.println("even");
 				long curr = nextEven();
 				data.setMessage("NextEven: ",curr);
 				countEven++;
 			break;
 			case 5: 
-				//System.out.println("odd");
 				long curr2 = nextOdd();
 				data.setMessage("NextOdd: ",curr2);
 				countOdd++;

@@ -7,7 +7,6 @@ import java.net.Socket;
 import java.util.*;
 public class uThr implements Runnable
 {
-	
 	private int iters = 20;
 	private int command;
 	private int thrId;
@@ -28,11 +27,11 @@ public class uThr implements Runnable
 		trt.setThreadId(thrId);
 		runThr = r;
 	}
-	/* command : 1 =  nextEven
-				 2 =  nextOdd
-				 3 = nextEvenFib
-				 4 = Rand
-				 5 = nextPrime*/
+	/* command : 1 = nextEvenFib
+				 2 = nextLargerRand
+				 3 = nextPrime
+				 4 = nextEven
+				 5 = nextOdd*/
 	public void run()
 	{
 		

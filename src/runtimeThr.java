@@ -3,7 +3,6 @@ import java.net.Socket;
 import java.util.*;
 public class runtimeThr implements Runnable
 {
-	
 	public Queue requestQue;
 	public Queue returnQue;
 	public LinkedList<uThr> uThrList;
@@ -59,6 +58,7 @@ public class runtimeThr implements Runnable
 			
 		}
 	}
+	
 	/*
 	 * This will send the message back to the correct thread
 	 */

@@ -28,5 +28,4 @@ public class RTdata
 		{
 			message =  msg + " " +s ;
 		}
-		
 	}
