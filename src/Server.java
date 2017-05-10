@@ -4,10 +4,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.Random;
 import java.util.concurrent.locks.*;;
-//32.88
-//34.66
-//84.43
-//91/105
+
 /**
  * 
  * @author Richard D., Luis R. Howard C. Mukesh S.
@@ -246,16 +243,7 @@ public class Server {
             if (num % i == 0) return false;
         return true;
 	}
-	private int nextEven()
-	{
-		currentEven += 2;
-		return currentEven;
-	}
-	private int nextOdd()
-	{
-		currentOdd += 2;
-		return currentOdd;
-	}
+
 	public static void main(String[] args) {
 		try {
 			Server server = new Server(

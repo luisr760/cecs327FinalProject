@@ -3,6 +3,13 @@ import java.net.Socket;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+/**
+ * 
+ * @author Richard D., Luis R. Howard C. Mukesh S.
+ * This class checks its requestque to and it there are
+ * elements then it spawns appropriate thread, network or local thread
+ * based on the command/data of the element.
+ */
 public class runtimeThr implements Runnable
 {
 	
@@ -15,8 +22,6 @@ public class runtimeThr implements Runnable
 	private localThr local;
 	
 	private static Lock lock = new ReentrantLock();
-	private static Lock lockMsg = new ReentrantLock();
-	private Lock lockReq = new ReentrantLock();
 	
 	/**
 	 * runtimeThr Constructor will get instantiate the queues

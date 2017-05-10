@@ -2,7 +2,15 @@ import java.io.*;
 import java.net.Socket;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-
+/**
+ * 
+ * @author Richard D., Luis R. Howard C. Mukesh S.
+ * This class will was spawned by the runtime thread
+ * thus meaning the command was 1-3 and sends a request 
+ * to the server to compute the nextLargeRand, nextEvenFibb, or
+ * nextPrime based on command waits for reply and then 
+ * modifies data that will soon be sent back to uThr
+ */
 public class networkThr implements Runnable
 {
 	private BufferedReader in;

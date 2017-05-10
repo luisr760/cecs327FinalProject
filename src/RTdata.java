@@ -1,9 +1,17 @@
+/**
+ * 
+ * @author Richard D., Luis R. Howard C. Mukesh S.
+ * This class will hold data that is sent to the runtime data que.
+ * It holds uThrid, command, and message.
+ */
 public class RTdata
 {
+		// Thread (uthr) id
 		private int threadId;
+		//command 1-5
 		private int command;
+		//Message that will go back to uThr
 		private String message;
-		private int count;
 		/**
 		 * Sets the id of the uThr
 		 * @param t uThr id (0-7)

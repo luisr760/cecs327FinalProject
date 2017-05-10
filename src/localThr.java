@@ -1,4 +1,10 @@
-
+/**
+ * 
+ * @author Richard D., Luis R. Howard C. Mukesh S.
+ * This will be spawned by runtime is commad is 
+ * 4-5 and will get the nextEven or nextOdd depending 
+ * on the command
+ */
 public class localThr implements Runnable
 {
 	public static long even = 2;
@@ -17,6 +23,7 @@ public class localThr implements Runnable
 		choice = c;
 		data = d;
 	}
+	
 	public void run()
 	{
 		switch (choice)
@@ -44,14 +51,14 @@ public class localThr implements Runnable
 	/**
 	 * Return the data that it manipulated to be sent back to uThr later
 	 * by the Runtimethr
-	 * @return
+	 * @return return the RTdata that holds all info
 	 */
 	public RTdata returnData(){
 		return data;
 	}
 	/**
 	 * Return the nextEven
-	 * @return
+	 * @return returns the next even number
 	 */
 	public long nextEven()
 	{
@@ -59,7 +66,7 @@ public class localThr implements Runnable
 	}
 	/**
 	 * Return the nextOdd
-	 * @return
+	 * @return returns the next odd number
 	 */
 	public long nextOdd()
 	{

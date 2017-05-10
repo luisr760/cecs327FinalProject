@@ -7,6 +7,13 @@ import java.net.Socket;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+/**
+ * 
+ * @author Richard D., Luis R. Howard C. Mukesh S.
+ * This class generates 20 random commands
+ * of nextEven, nextOdd, nextRand, nextPrime, or
+ * nextEvenFibb. Then puts it in a requestQue un runtimeThr
+ */
 public class uThr implements Runnable
 {
 	
@@ -16,8 +23,6 @@ public class uThr implements Runnable
     
 	private Random rand;
 	private RTdata trt; 
-	private static Socket socket;
-	private static Lock lock = new ReentrantLock();
 	/**
 	 * uThr Constructor will set the id of the uThr
 	 * @param id Sets id of the uThr

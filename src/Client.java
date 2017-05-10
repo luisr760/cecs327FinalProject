@@ -6,16 +6,12 @@ import java.util.Scanner;
 /**
  * 
  * @author Richard D., Luis R. Howard C. Mukesh S.
- * This program creates a client that sends requests to a server in the
- * form of integer values. The client does not send any data other than 
- * the integer specifying which response it is requesting. Implemented 
- * in TCP.
+ * This program creates a client that will create 8 uThr 
+ * and will start them which will then create 20 commands
  */
 
 public class Client {
     private Socket socket;
-    //private BufferedReader in;
-    //private PrintWriter out;
 
     /**
      * Constructor for a client
@@ -25,40 +21,7 @@ public class Client {
      */
     public Client(String hostname, int port) throws IOException {
         socket = new Socket(hostname, port);
-        //in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        //out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
     }
-    
-    /**
-     * Sends a request to connected server
-     * @param option the requested option to send to the server
-     * @throws IOException in case socket encounters an error
-     */
-    /*private void sendRequest(int option) throws IOException {
-        out.print(option + "\n");
-        out.flush();
-    }
-    
-    
-    /**
-     * gets the reply from the server
-     * @return the servers response 
-     * @throws IOException in case theres an error with the connection
-     */
-    /*
-    private long getReply() throws IOException {
-        String reply = in.readLine();
-        if (reply == null) {
-            throw new IOException("connection closed");
-        }
-        
-        try {
-            return new Long(reply);
-        } catch (NumberFormatException nfe) {
-            throw new IOException("misformatted reply: " + reply);
-        }
-    }
-*/
 
     /**
      * Cleanly closes a client cleanly.
@@ -67,9 +30,6 @@ public class Client {
     private void close() throws IOException  {
         socket.close();
     }
-    
-    
-    
     
     public static void main(String[] args) throws InterruptedException {
     	int uThrNumb= 8;
