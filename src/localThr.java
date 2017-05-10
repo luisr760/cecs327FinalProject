@@ -1,3 +1,6 @@
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 /**
  * 
  * @author Richard D., Luis R. Howard C. Mukesh S.
@@ -11,6 +14,8 @@ public class localThr implements Runnable
 	public static long odd = 1;
 	private int choice;
 	private RTdata data;
+	private Lock evenLock = new ReentrantLock();
+	private Lock oddLock = new ReentrantLock();
 	/**
 	 * localThr constructor sets the choice
 	 * it was sent from network thread and the data to setmessage
@@ -33,17 +38,27 @@ public class localThr implements Runnable
 			 * it will get next even
 			 */
 			case 4: 
-				long curr = nextEven();
-				data.setMessage("NextEven: ",curr);
-				even+=2;
+				try{
+					evenLock.lock();
+					long curr = nextEven();
+					data.setMessage("NextEven: ",curr);
+					even+=2;
+				}finally{
+					evenLock.unlock();
+				}
 			break;
 			/**
 			 * If choice is 5 then it will retrieve the next odd
 			 */
-			case 5: 
-				long curr2 = nextOdd();
-				data.setMessage("NextOdd: ",curr2);
-				odd+=2;
+			case 5:
+				try{
+					oddLock.lock();
+					long curr2 = nextOdd();
+					data.setMessage("NextOdd: ",curr2);
+					odd+=2;
+				}finally{
+					oddLock.unlock();
+				}
 			break;
 		}
 		

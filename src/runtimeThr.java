@@ -22,6 +22,7 @@ public class runtimeThr implements Runnable
 	private localThr local;
 	
 	private static Lock lock = new ReentrantLock();
+	private static Lock lockReq = new ReentrantLock();
 	
 	/**
 	 * runtimeThr Constructor will get instantiate the queues
@@ -48,6 +49,7 @@ public class runtimeThr implements Runnable
 			if(!requestQue.isEmpty())
 			{
 				try{
+					lockReq.lock();
 				RTdata data = requestQue.poll();
 				/**
 				 * If command is 1-3 if call networkthread
@@ -59,7 +61,10 @@ public class runtimeThr implements Runnable
 						Thread t = new Thread(netThr);
 						t.start();
 						t.join();
-					} catch (IOException e) {e.printStackTrace();}
+					} catch (IOException e) {e.printStackTrace();} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					/**
 					 * gets the new data modified by the networkThread
 					 */
@@ -102,7 +107,10 @@ public class runtimeThr implements Runnable
 					uThr u = uThrList.get(dt.getThreadId());
 					u.printMessage(dt.getMessage());
 				}
-				}catch(Exception e){	}
+				}
+				finally{
+					lockReq.unlock();
+				}
 			}
 		}
 	}
