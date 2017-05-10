@@ -1,7 +1,6 @@
 import java.io.*;
 import java.net.Socket;
-import java.util.InputMismatchException;
-import java.util.Scanner;
+
 
 /**
  * 
@@ -12,7 +11,7 @@ import java.util.Scanner;
 
 public class Client {
     private Socket socket;
-
+    static int numOfUthr = 8;
     /**
      * Constructor for a client
      * @param hostname the hostname for the socket
@@ -32,7 +31,6 @@ public class Client {
     }
     
     public static void main(String[] args) throws InterruptedException {
-    	int uThrNumb= 8;
     
     	try {
             Client client = new Client("localhost", Server.PORT);
@@ -41,7 +39,7 @@ public class Client {
             Thread runtime = new Thread(rt);
     	    runtime.start();
     	    
-	    	for(int i = 0; i < uThrNumb; i++)
+	    	for(int i = 0; i < numOfUthr; i++)
 	    	{
 	    		uThr u = new uThr(i);
 	    		Thread uThr = new Thread(u);

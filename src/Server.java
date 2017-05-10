@@ -7,7 +7,7 @@ import java.util.concurrent.locks.*;;
 
 /**
  * 
- * @author Richard D., Luis R. Howard C. Mukesh S.
+ * @author Richard D., Luis R., Howard C., Mukesh S.
  * This program creates a server that creates a thread for each connected client.
  * The server is stateful and concurrent, and responds to requests in the form
  * of numbers (1 - 3 being valid requests). It can return an even fibonacci, a random 
@@ -96,8 +96,7 @@ public class Server {
 			while(value != 0) {
 				try {
 					value = Character.getNumericValue(in.read());
-					//remove afterwards
-					System.out.println("read value" + value);
+					
 					// compute answer and send back to client
 					switch(value) {
 						case 1:
@@ -131,6 +130,7 @@ public class Server {
 					             //if rand is smaller than rand_min, then you overflowed					             
 					             if(rand < mRandMin) {
 					            	 mRandMin = 1;
+					            	 rand = new Random().nextInt(100 + mRandMin) + mRandMin;
 					             }
 					             //rand_min becomes the new minimum to guarantee next random value is larger
 					             else
@@ -243,7 +243,7 @@ public class Server {
             if (num % i == 0) return false;
         return true;
 	}
-
+	
 	public static void main(String[] args) {
 		try {
 			Server server = new Server(

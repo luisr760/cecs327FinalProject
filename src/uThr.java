@@ -1,12 +1,5 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.net.Socket;
 import java.util.*;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+
 /**
  * 
  * @author Richard D., Luis R. Howard C. Mukesh S.
@@ -48,15 +41,16 @@ public class uThr implements Runnable
 			trt.setCommand(command);
 			runtimeThr.toReqQue(trt);
 		}
-		
+		runtimeThr.increment();
 	}
+	
+	
 	/**
 	 * printMessage will print out the result of the command it wanted.
 	 * @param m it is the message from the returnQue in the runtime
 	 */
-	public void printMessage(String m)
+	public void printMessage(RTdata m)
 	{
-		System.out.println("ID: " + thrId + " " + m);
+		System.out.println(m);
 	}
 }
-

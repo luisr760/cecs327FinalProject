@@ -64,4 +64,7 @@ public class RTdata
 			message =  msg + " " +s ;
 		}
 		
+		public String toString () {
+			return message;
+		}
 	}
