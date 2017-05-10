@@ -18,19 +18,22 @@ public class uThr implements Runnable
 	private RTdata trt; 
 	private static Socket socket;
 	private static Lock lock = new ReentrantLock();
-	
+	/**
+	 * uThr Constructor will set the id of the uThr
+	 * @param id Sets id of the uThr
+	 */
 	public uThr(int id)
 	{
 		thrId = id;
 	}
-	/* command : 1 =  nextEven
-				 2 =  nextOdd
-				 3 = nextEvenFib
-				 4 = Rand
-				 5 = nextPrime*/
+	
 	public void run()
 	{
-		
+		/**
+		 * for loop will iterate 20 times for 20 commands. 
+		 * and will send a request to runtime to grab an answer from server 
+		 * using networkThr or localThr.
+		 */
 		for(int i = 0; i < iters; i++)
 		{
 			trt = new RTdata();
@@ -42,6 +45,10 @@ public class uThr implements Runnable
 		}
 		
 	}
+	/**
+	 * printMessage will print out the result of the command it wanted.
+	 * @param m it is the message from the returnQue in the runtime
+	 */
 	public void printMessage(String m)
 	{
 		System.out.println("ID: " + thrId + " " + m);

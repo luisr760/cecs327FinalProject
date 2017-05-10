@@ -65,8 +65,6 @@ public class Client {
      * @throws IOException if an error occurs closing the client.
      */
     private void close() throws IOException  {
-        //in.close();
-        //out.close();
         socket.close();
     }
     

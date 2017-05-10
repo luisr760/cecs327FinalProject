@@ -9,6 +9,10 @@ public class networkThr implements Runnable
     private PrintWriter out;
     private Socket socket;
     private RTdata data;
+    /**
+	 * Sets up the netWorkThr in and out reader and writer to communicate
+	 * with the server.
+	 */
 	public networkThr(Socket s, RTdata d) throws IOException
 	{
 		socket = s;
@@ -18,6 +22,11 @@ public class networkThr implements Runnable
 	}
 	public void run()
 	{
+		/**
+		 * Depending on the command it will send a request to the server
+		 * and wait for reply
+		 * and write the appropriate message based on command
+		 */
 		try {
 			sendRequest(data.getCommand());
 			long ans = getReply();
@@ -33,6 +42,10 @@ public class networkThr implements Runnable
 			e.printStackTrace();
 		}
 	}
+	/**
+	 * Data that was sent that contains info of what uthr it wants.
+	 * @return returns the data that it was given
+	 */
 	public RTdata returnData(){
 		return data;
 	}

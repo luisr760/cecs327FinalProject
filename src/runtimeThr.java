@@ -14,12 +14,15 @@ public class runtimeThr implements Runnable
 	private networkThr netThr;
 	private localThr local;
 	
-	private boolean done;
 	private static Lock lock = new ReentrantLock();
 	private static Lock lockMsg = new ReentrantLock();
 	private Lock lockReq = new ReentrantLock();
 	
-	//Receives the socket to send to the network thread 
+	/**
+	 * runtimeThr Constructor will get instantiate the queues
+	 * and the uThrlists
+	 * @param s the socket that will be used to connect to the server
+	 */
 	public runtimeThr(Socket s)
 	{
 		socket = s;
@@ -31,11 +34,19 @@ public class runtimeThr implements Runnable
 	{
 		
 		while(true){
+			/**
+			 * Will check if the request que conatains
+			 * element if it does it grabs the head element
+			 * then check the command of the data and chooses the 
+			 * appropriate network or local thread
+			 */
 			if(!requestQue.isEmpty())
 			{
 				try{
 				RTdata data = requestQue.poll();
-				//System.out.println("ReqQueue-Thread:" +data.getThreadId() + " c:" + data.getCommand() );
+				/**
+				 * If command is 1-3 if call networkthread
+				 */
 				if(data.getCommand() >= 1 && data.getCommand() <= 3)
 				{
 					try {
@@ -44,9 +55,18 @@ public class runtimeThr implements Runnable
 						t.start();
 						t.join();
 					} catch (IOException e) {e.printStackTrace();}
+					/**
+					 * gets the new data modified by the networkThread
+					 */
 					data = netThr.returnData();
+					/**
+					 * adds data with calculated answer to return que
+					 */
 					returnQue.add(data);
 				}
+				/**
+				 * If command is 4-5 if call localThread
+				 */
 				else if(data.getCommand() == 4 || data.getCommand() == 5)
 				{
 					try {
@@ -56,42 +76,44 @@ public class runtimeThr implements Runnable
 						t.join();
 					} 
 					catch (Exception e) {e.printStackTrace();}
+					/**
+					 * gets the new data modified by the networkThread
+					 */
 					data = local.returnData();
+					/**
+					 * adds data with calculated answer to return que
+					 */
 					returnQue.add(data);
 				}
+				/**
+				 * if return que isnt empty then it will get the current 
+				 * head element and tell the correct uThr to print the message 
+				 * it asked for
+				 */
 				if(!returnQue.isEmpty())
 				{
+					
 					RTdata dt = returnQue.poll();
 					uThr u = uThrList.get(dt.getThreadId());
 					u.printMessage(dt.getMessage());
-					//System.out.print("ReturnQueue-Thread:" +dt.getThreadId() + " c:" + dt.getCommand() );
-					//System.out.println(" Msg: "+ dt.getMessage() );
 				}
-				}catch(Exception e){
-					
-				}
+				}catch(Exception e){	}
 			}
 		}
 	}
-	/*
-	 * This will send the message back to the correct thread
+	/**
+	 * Add a uThr to a list
+	 * @param u the uthr added to a list.
 	 */
-	public void sendMessageBack()
-	{
-		try{
-			lockMsg.lock();
-			RTdata d = (RTdata) returnQue.poll();
-			uThrList.get(d.getThreadId()).printMessage(d.getMessage());
-		}finally{
-			lockMsg.unlock();
-		}
-	}
 	public void addThrList(uThr u){
 		uThrList.add(u);
 	}
+	/**
+	 * This will add the data that a uthr wants to the queue
+	 * @param o the Data that uThr wants the runtime to get for it
+	 */
 	public static void toReqQue(RTdata o)
 	{
-		//System.out.println("In QUEUE - Thread:" +o.getThreadId() + " c:" + o.getCommand() );
 		try{
 			lock.lock();
 			requestQue.add(o);	
