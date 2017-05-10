@@ -28,7 +28,6 @@ public class networkThr implements Runnable
 			}else if(data.getCommand() == 3){
 				data.setMessage("NextPrime: ",ans);
 			}
-			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

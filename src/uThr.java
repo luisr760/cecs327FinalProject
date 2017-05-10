@@ -5,28 +5,23 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 public class uThr implements Runnable
 {
 	
 	private int iters = 20;
 	private int command;
-	private int thrId;
-	
-	private BufferedReader in;
-    private PrintWriter out;
+	private  int thrId;
     
 	private Random rand;
 	private RTdata trt; 
-	public runtimeThr runThr; 
 	private static Socket socket;
+	private static Lock lock = new ReentrantLock();
 	
-	public uThr(int id, runtimeThr r)
+	public uThr(int id)
 	{
-		rand = new Random();
 		thrId = id;
-		trt = new RTdata();
-		trt.setThreadId(thrId);
-		runThr = r;
 	}
 	/* command : 1 =  nextEven
 				 2 =  nextOdd
@@ -38,15 +33,18 @@ public class uThr implements Runnable
 		
 		for(int i = 0; i < iters; i++)
 		{
-			command = 1+ (rand.nextInt(5));
+			trt = new RTdata();
+			trt.setThreadId(thrId);
+			rand = new Random();
+			command = 1 + (rand.nextInt(5));
 			trt.setCommand(command);
-			runThr.toReqQue(trt);
+			runtimeThr.toReqQue(trt);
 		}
-		runThr.setDone(true);
+		
 	}
 	public void printMessage(String m)
 	{
-		System.out.println(m);
+		System.out.println("ID: " + thrId + " " + m);
 	}
 }
 

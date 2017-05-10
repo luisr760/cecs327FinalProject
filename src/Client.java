@@ -75,7 +75,7 @@ public class Client {
     
     public static void main(String[] args) throws InterruptedException {
     	int uThrNumb= 8;
-    	Scanner in = new Scanner(System.in);
+    
     	try {
             Client client = new Client("localhost", Server.PORT);
             
@@ -83,54 +83,15 @@ public class Client {
             Thread runtime = new Thread(rt);
     	    runtime.start();
     	    
-    	    Thread uThr = null;
 	    	for(int i = 0; i < uThrNumb; i++)
 	    	{
-	    		uThr u = new uThr(i, rt);
-	    		uThr = new Thread(u);
+	    		uThr u = new uThr(i);
+	    		Thread uThr = new Thread(u);
 	    		rt.addThrList(u);
 	    		uThr.start();
-	    		uThr.join();
 	    	}
-	    	runtime.join();
-	    	client.close();
     	}catch (IOException ioe) {
         	System.err.print(ioe.getMessage());
         }
-        finally {
-        	in.close();
-        }
-       /* try {
-            Client client = new Client("localhost", Server.PORT);
-            int choice = -1;
-            try {
-	            while (choice != 0) {
-	            	System.out.println("Select an option\n1. Next even fibonacci number"
-	            			+ "\n2. Next larger random number\n3. Next prime number");
-		            choice = in.nextInt();
-		            System.out.println("Sent value " + choice);
-		            client.sendRequest(choice);
-		            System.out.println("");
-		    	    long y = client.getReply();
-		    	    System.out.println(""+y);
-	            	
-	            }
-            }
-            
-            //in case a non-integer is attempted to be sent to the server
-            catch (InputMismatchException e) {
-            	//tell the server to close the client by sending 0
-            	client.sendRequest(0);
-            	System.err.println("Invalid option. Closing client cleanly.");
-            }
-            
-            client.close();
-        } catch (IOException ioe) {
-        	System.err.print(ioe.getMessage());
-        	
-        }
-        finally {
-        	in.close();
-        }*/
     }
 }

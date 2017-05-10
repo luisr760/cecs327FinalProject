@@ -1,16 +1,24 @@
 import java.io.IOException;
 import java.net.Socket;
 import java.util.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 public class runtimeThr implements Runnable
 {
 	
-	public Queue requestQue;
-	public Queue returnQue;
-	public LinkedList<uThr> uThrList;
+	public static Queue<RTdata> requestQue;
+	public static Queue<RTdata> returnQue;
+	public static LinkedList<uThr> uThrList;
+	
 	private Socket socket;
 	private networkThr netThr;
 	private localThr local;
+	
 	private boolean done;
+	private static Lock lock = new ReentrantLock();
+	private static Lock lockMsg = new ReentrantLock();
+	private Lock lockReq = new ReentrantLock();
+	
 	//Receives the socket to send to the network thread 
 	public runtimeThr(Socket s)
 	{
@@ -21,42 +29,48 @@ public class runtimeThr implements Runnable
 	}
 	public void run()
 	{
-		Thread t = null;
-		while(true)
-		{
-			
+		
+		while(true){
 			if(!requestQue.isEmpty())
 			{
-				RTdata data = (RTdata) requestQue.poll();
-				try 
+				try{
+				RTdata data = requestQue.poll();
+				//System.out.println("ReqQueue-Thread:" +data.getThreadId() + " c:" + data.getCommand() );
+				if(data.getCommand() >= 1 && data.getCommand() <= 3)
 				{
-					if(data.getCommand() == 4 || data.getCommand() == 5)
-					{
-						local = new localThr(data.getCommand(), data);
-						t = new Thread(local);
-						t.start();
-						t.join();
-						returnQue.add(local.returnData());
-					}
-					else{
+					try {
 						netThr = new networkThr(socket, data);
-						t = new Thread(netThr);
+						Thread t = new Thread(netThr);
 						t.start();
 						t.join();
-						returnQue.add(netThr.returnData());
-					}
-				} catch (IOException e) 
+					} catch (IOException e) {e.printStackTrace();}
+					data = netThr.returnData();
+					returnQue.add(data);
+				}
+				else if(data.getCommand() == 4 || data.getCommand() == 5)
 				{
-					e.printStackTrace();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+					try {
+						local = new localThr(data.getCommand(), data);
+						Thread t = new Thread(local);
+						t.start();
+						t.join();
+					} 
+					catch (Exception e) {e.printStackTrace();}
+					data = local.returnData();
+					returnQue.add(data);
 				}
 				if(!returnQue.isEmpty())
 				{
-					sendMessageBack();
+					RTdata dt = returnQue.poll();
+					uThr u = uThrList.get(dt.getThreadId());
+					u.printMessage(dt.getMessage());
+					//System.out.print("ReturnQueue-Thread:" +dt.getThreadId() + " c:" + dt.getCommand() );
+					//System.out.println(" Msg: "+ dt.getMessage() );
+				}
+				}catch(Exception e){
+					
 				}
 			}
-			
 		}
 	}
 	/*
@@ -64,18 +78,25 @@ public class runtimeThr implements Runnable
 	 */
 	public void sendMessageBack()
 	{
-		RTdata d = (RTdata) returnQue.poll();
-		uThrList.get(d.getThreadId()).printMessage(d.getMessage());
+		try{
+			lockMsg.lock();
+			RTdata d = (RTdata) returnQue.poll();
+			uThrList.get(d.getThreadId()).printMessage(d.getMessage());
+		}finally{
+			lockMsg.unlock();
+		}
 	}
 	public void addThrList(uThr u){
 		uThrList.add(u);
 	}
-	public void toReqQue(RTdata o)
+	public static void toReqQue(RTdata o)
 	{
-		requestQue.add(o);	
-	}
-	public void setDone(boolean d)
-	{
-		done = d;
+		//System.out.println("In QUEUE - Thread:" +o.getThreadId() + " c:" + o.getCommand() );
+		try{
+			lock.lock();
+			requestQue.add(o);	
+		}finally{
+			lock.unlock();
+		}
 	}
 }
